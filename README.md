@@ -4,9 +4,11 @@ Stock Tracker Demo
 Write Me!
 
 Todo:
-* Implement to the API specification
-* Possibly add in HATEOAS
+
+* Fix display of Timestamp on return json
 * Handle concurrent access of the dao layer, especially Update
-* Split data layer from API pojos
 * Pagination?
+* Possibly add in HATEOAS
 * Clean up Readme
+* ~~Implement to the API specification~~
+* ~~Split data layer from API pojos~~
