@@ -16,6 +16,17 @@ public class Stock {
     private Instant lastUpdated;
 
     /**
+     * Default constructor used in serialization.
+     */
+    public Stock() {
+
+    }
+
+    public Stock(String name, Double currentPrice) {
+        this(null, name, currentPrice, Instant.now());
+    }
+
+    /**
      * Constructor.
      *
      * @param id - Identifier for the stock, managed internally
@@ -44,6 +55,22 @@ public class Stock {
 
     public Instant getLastUpdated() {
         return lastUpdated;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCurrentPrice(Double currentPrice) {
+        this.currentPrice = currentPrice;
+    }
+
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     @Override

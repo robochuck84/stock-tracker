@@ -1,5 +1,7 @@
 package stock.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import stock.Stock;
 
@@ -12,6 +14,8 @@ import java.util.stream.Collectors;
 @Repository
 public class StockStore {
 
+    private Logger logger = LoggerFactory.getLogger(StockStore.class);
+
     private final AtomicLong counter = new AtomicLong();
 
     private Map<Long, Stock> store;
@@ -22,16 +26,17 @@ public class StockStore {
 
     public Long insert(Stock stock) {
         Long id = counter.incrementAndGet();
-        store.put(stock.getId(),
-                new Stock(id,
-                          stock.getName(),
-                          stock.getCurrentPrice(),
-                          stock.getLastUpdated()));
+        store.put(id,
+                  new Stock(stock.getName(),
+                            stock.getCurrentPrice()));
         return id;
     }
 
     public void update(Long id, Stock stock) {
-        store.put(id, stock);
+        if (store.containsKey(id)) {
+            store.put(id, new Stock(stock.getName(),
+                                    stock.getCurrentPrice()));
+        }
     }
 
     public Stock retrieve(Long id) {

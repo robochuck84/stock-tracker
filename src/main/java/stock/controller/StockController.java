@@ -1,5 +1,7 @@
 package stock.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +12,11 @@ import stock.dao.StockStore;
 
 import java.util.List;
 
-@RestController("/api")
+@RestController()
+@RequestMapping("/api")
 public class StockController {
+
+    private Logger logger = LoggerFactory.getLogger(StockController.class);
 
     private StockStore store;
 
@@ -37,6 +42,7 @@ public class StockController {
 
     @RequestMapping(path="/stocks", method=RequestMethod.POST)
     public Long createStock(Stock stock) {
+        logger.info("Asked to create stock {}", stock);
         return store.insert(stock);
     }
 }
