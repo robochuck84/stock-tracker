@@ -3,10 +3,8 @@ package stock.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import stock.Stock;
 import stock.dao.StockStore;
 
@@ -32,7 +30,7 @@ public class StockController {
 
     @RequestMapping("/stocks/{id}")
     public Stock getStock(@PathVariable("id") Long id) {
-        return store.retrieve(id);
+        return store.retrieve(id).orElseThrow(() -> new StockNotFoundException(id));
     }
 
     @RequestMapping(path="/stocks/{id}", method=RequestMethod.PUT)
@@ -44,5 +42,12 @@ public class StockController {
     public Long createStock(Stock stock) {
         logger.info("Asked to create stock {}", stock);
         return store.insert(stock);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    class StockNotFoundException extends RuntimeException {
+        public StockNotFoundException(Long id) {
+            super("Cound not find stock with id " + id);
+        }
     }
 }

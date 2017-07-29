@@ -5,6 +5,7 @@ import stock.Stock;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,10 +23,11 @@ public class StockStoreTest {
 
         // when
         Long id = store.insert(stock);
-        Stock test = store.retrieve(id);
+        Optional<Stock> test = store.retrieve(id);
 
         // then
-        assertThat(test, equalTo(new Stock(1l, "test", 10.0, now)));
+        assertThat(test.get().getName(), equalTo("test"));
+        assertThat(test.get().getCurrentPrice(), equalTo(10.0));
     }
 
     @Test
@@ -51,16 +53,15 @@ public class StockStoreTest {
         // given
         StockStore store = new StockStore();
 
-        Long id = 1l;
-        Instant now = Instant.now();
-        Stock stock = new Stock(id, "test", 10.0, now);
+        Stock stock = new Stock("test", 10.0);
 
         // when
-        Instant updated = Instant.now();
-        store.update(id, new Stock(id, "test", 12.0, updated));
-        Stock test = store.retrieve(id);
+        Long id = store.insert(stock);
+        store.update(id, new Stock("test", 12.0));
+        Optional<Stock> test = store.retrieve(id);
 
         // then
-        assertThat(test, equalTo(new Stock(1l, "test", 12.0, updated)));
+        assertThat(test.get().getName(), equalTo("test"));
+        assertThat(test.get().getCurrentPrice(), equalTo(12.0));
     }
 }

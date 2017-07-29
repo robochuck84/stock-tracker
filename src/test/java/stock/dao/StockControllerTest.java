@@ -7,6 +7,7 @@ import stock.controller.StockController;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -46,7 +47,7 @@ public class StockControllerTest {
         Stock test = new Stock(1l, "test", 10.0, now);
 
         StockStore store = mock(StockStore.class);
-        when(store.retrieve(eq(1l))).thenReturn(test);
+        when(store.retrieve(eq(1l))).thenReturn(Optional.of(test));
 
         StockController controller = new StockController(store);
 
