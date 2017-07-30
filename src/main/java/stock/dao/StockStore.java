@@ -35,7 +35,8 @@ public class StockStore {
 
     public void update(Long id, Stock stock) {
         if (store.containsKey(id)) {
-            store.put(id, new StockEntity(stock.getName(),
+            StockEntity stockEntity = store.get(id);
+            store.put(id, new StockEntity(stockEntity.getName(),
                                     stock.getCurrentPrice()));
         }
     }
