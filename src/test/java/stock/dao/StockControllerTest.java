@@ -5,7 +5,7 @@ import org.junit.Test;
 import stock.Stock;
 import stock.controller.StockController;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,15 +23,14 @@ public class StockControllerTest {
     @Test
     public void testGetStocks() {
         // given
-        Instant now = Instant.now();
-        Stock test = new Stock(1l, "test", 10.0, now);
+        Stock test = new Stock(1l, "test", 10.0, "now");
 
         StockStore store = mock(StockStore.class);
         when(store.retrieveAll()).thenReturn(ImmutableList.of(test));
 
         StockController controller = new StockController(store);
 
-        Stock expected = new Stock(1l, "test", 10.0, now);
+        Stock expected = new Stock(1l, "test", 10.0, "now");
 
         // when
         List<Stock> testStocks = controller.getStocks();
@@ -43,15 +42,14 @@ public class StockControllerTest {
     @Test
     public void testGetStock() {
         // given
-        Instant now = Instant.now();
-        Stock test = new Stock(1l, "test", 10.0, now);
+        Stock test = new Stock(1l, "test", 10.0, "now");
 
         StockStore store = mock(StockStore.class);
         when(store.retrieve(eq(1l))).thenReturn(Optional.of(test));
 
         StockController controller = new StockController(store);
 
-        Stock expected = new Stock(1l, "test", 10.0, now);
+        Stock expected = new Stock(1l, "test", 10.0, "now");
 
         // when
         Stock testStock = controller.getStock(1l);
@@ -63,8 +61,7 @@ public class StockControllerTest {
     @Test
     public void testUpdateStock() {
         // given
-        Instant now = Instant.now();
-        Stock test = new Stock(1l, "test", 10.0, now);
+        Stock test = new Stock(1l, "test", 10.0, "now");
 
         StockStore store = mock(StockStore.class);
 
@@ -80,8 +77,7 @@ public class StockControllerTest {
     @Test
     public void testCreateStock() {
         // given
-        Instant now = Instant.now();
-        Stock test = new Stock(1l, "test", 10.0, now);
+        Stock test = new Stock(1l, "test", 10.0, "now");
 
         StockStore store = mock(StockStore.class);
         when(store.insert(eq(test))).thenReturn(1l);

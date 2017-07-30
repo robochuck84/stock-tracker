@@ -3,16 +3,16 @@ package stock.dao;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class StockEntity {
 
     private String name;
     private Double currentPrice;
-    private Instant lastUpdated;
+    private LocalDateTime lastUpdated;
 
     public StockEntity(String name, Double currentPrice) {
-        this(name, currentPrice, Instant.now());
+        this(name, currentPrice, LocalDateTime.now());
     }
 
     /**
@@ -22,7 +22,7 @@ public class StockEntity {
      * @param currentPrice - Current Price of the stock
      * @param lastUpdated - Last update timestamp of the stock
      */
-    public StockEntity(String name, Double currentPrice, Instant lastUpdated) {
+    public StockEntity(String name, Double currentPrice, LocalDateTime lastUpdated) {
         this.name = name;
         this.currentPrice = currentPrice;
         this.lastUpdated = lastUpdated;
@@ -36,7 +36,7 @@ public class StockEntity {
         return currentPrice;
     }
 
-    public Instant getLastUpdated() {
+    public LocalDateTime getLastUpdated() {
         return lastUpdated;
     }
 

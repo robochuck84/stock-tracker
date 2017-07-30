@@ -3,13 +3,13 @@ package stock.dao;
 import org.junit.Test;
 import stock.Stock;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class StockStoreTest {
 
@@ -18,8 +18,7 @@ public class StockStoreTest {
         // given
         StockStore store = new StockStore();
 
-        Instant now = Instant.now();
-        Stock stock = new Stock(1l, "test", 10.0, now);
+        Stock stock = new Stock(1l, "test", 10.0, null);
 
         // when
         Long id = store.insert(stock);
@@ -35,8 +34,8 @@ public class StockStoreTest {
         // given
         StockStore store = new StockStore();
 
-        Stock stock1 = new Stock(1l, "test1", 1.0, Instant.now());
-        Stock stock2 = new Stock(2l, "test2", 2.0, Instant.now());
+        Stock stock1 = new Stock(1l, "test1", 1.0, null);
+        Stock stock2 = new Stock(2l, "test2", 2.0, null);
 
         // when
         store.insert(stock1);
@@ -45,7 +44,23 @@ public class StockStoreTest {
         List<Stock> all = store.retrieveAll();
 
         // then
-        assertThat(all, contains(stock1, stock2));
+        assertThat(all, hasSize(2));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDoubleInsertionOfTheSameName() {
+        // given
+        StockStore store = new StockStore();
+
+        Stock stock1 = new Stock(1l, "test", 1.0, null);
+        Stock stock2 = new Stock(2l, "test", 2.0, null);
+
+        // when
+        store.insert(stock1);
+        store.insert(stock2);
+
+        // then
+        fail();
     }
 
     @Test

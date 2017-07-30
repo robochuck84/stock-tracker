@@ -3,7 +3,7 @@ package stock;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Represents a single stock to be tracked.
@@ -13,7 +13,7 @@ public class Stock {
     private Long id;
     private String name;
     private Double currentPrice;
-    private Instant lastUpdated;
+    private String lastUpdated;
 
     /**
      * Default constructor used in serialization.
@@ -23,7 +23,7 @@ public class Stock {
     }
 
     public Stock(String name, Double currentPrice) {
-        this(null, name, currentPrice, Instant.now());
+        this(null, name, currentPrice, LocalDateTime.now().toString());
     }
 
     /**
@@ -34,7 +34,7 @@ public class Stock {
      * @param currentPrice - Current Price of the stock
      * @param lastUpdated - Last update timestamp of the stock
      */
-    public Stock(Long id, String name, Double currentPrice, Instant lastUpdated) {
+    public Stock(Long id, String name, Double currentPrice, String lastUpdated) {
         this.id = id;
         this.name = name;
         this.currentPrice = currentPrice;
@@ -53,7 +53,7 @@ public class Stock {
         return currentPrice;
     }
 
-    public Instant getLastUpdated() {
+    public String getLastUpdated() {
         return lastUpdated;
     }
 
@@ -69,7 +69,7 @@ public class Stock {
         this.currentPrice = currentPrice;
     }
 
-    public void setLastUpdated(Instant lastUpdated) {
+    public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
