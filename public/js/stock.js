@@ -1,3 +1,13 @@
+var create_table_element = function(item) {
+    var body = '<tr>'+
+        '<td>' + item.id + '</td>' +
+        '<td>' + item.name + '</td>' +
+        '<td>' + item.currentPrice + '</td>' +
+        '<td>' + item.lastUpdated.toString() + '</td>' +
+        '</tr>';
+    return body;
+};
+
 var load_all_stocks = function() {
     $.ajax({
         url: "http://localhost:8080/api/stocks",
@@ -5,13 +15,7 @@ var load_all_stocks = function() {
             console.log(data);
             var elements = $();
             data.forEach(function(item, index) {
-                var body = '<tr>'+
-                    '<td>' + item.id + '</td>' +
-                    '<td>' + item.name + '</td>' +
-                    '<td>' + item.currentPrice + '</td>' +
-                    '</tr>';
-                
-                elements = elements.add(body);
+                elements = elements.add(create_table_element(item));
             });
             $('#all-stocks').html(elements);
         }
@@ -29,14 +33,10 @@ $(document).ready(function() {
         $.ajax({
             url: "http://localhost:8080/api/stocks/" + id,
             success: function (data) {
-                var body = '<div class="well">' +
-                    '<div>Name: ' + data.name + '</div>' +
-                    '<div>Current Price: ' + data.currentPrice + '</div>' +
-                    '</div>';
-                $('.individual-stocks').html(body);
+                $('#all-stocks').html(create_table_element(data));
             },
             error: function (error) {
-                $('.individual-stocks').html('No stock with that ID');
+                $('#all-stocks').html('');
             }
         });
     })
@@ -50,11 +50,10 @@ $(document).ready(function() {
             contentType: "application/json",
             data: JSON.stringify({"id": id, "currentPrice": price}),
             success: function (data) {
-                $("#update-message").html("Success!");
                 load_all_stocks();
             },
             error: function(error) {
-                alert(error);
+                alert(error.responseJSON.message);
             }
         });
     });
@@ -68,11 +67,10 @@ $(document).ready(function() {
             contentType: "application/json",
             data: JSON.stringify({"name": name, "currentPrice": price}),
             success: function (data) {
-                $("#create-message").html("Successfully create stock " + name + " for " + price + ", ID is " + data);
                 load_all_stocks();
             },
             error: function(error) {
-                alert(error.message);
+                alert(error.responseJSON.message);
             }
         });
     });
