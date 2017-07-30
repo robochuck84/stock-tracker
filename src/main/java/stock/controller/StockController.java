@@ -41,7 +41,6 @@ public class StockController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void updateStock(@PathVariable("id") Long id, @RequestBody Stock stock) {
-        Preconditions.checkNotNull(stock.getName(), badRequest("Name cannot be null"));
         Preconditions.checkNotNull(stock.getCurrentPrice(), badRequest("Price cannot be null"));
         store.update(id, stock);
     }
