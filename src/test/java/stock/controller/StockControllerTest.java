@@ -1,9 +1,10 @@
-package stock.dao;
+package stock.controller;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import stock.Stock;
 import stock.controller.StockController;
+import stock.dao.StockStore;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -71,7 +72,7 @@ public class StockControllerTest {
         controller.updateStock(1l, test);
 
         // then
-        verify(store).update(eq(1l), eq(test));
+        verify(store).update(eq(1l), eq(test.getCurrentPrice()));
     }
 
     @Test

@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 @Repository
 public class StockStore {
 
-    private Logger logger = LoggerFactory.getLogger(StockStore.class);
-
     private final AtomicLong counter = new AtomicLong();
 
     private Map<Long, StockEntity> store;
@@ -53,14 +51,27 @@ public class StockStore {
         return id;
     }
 
-    public void update(Long id, Stock stock) {
+    /**
+     * Update an existing stock items price, all other fields are fixed.
+     *
+     * @param id - id of the stock to update
+     * @param price - price
+     */
+    public void update(Long id, Double price) {
         if (store.containsKey(id)) {
             StockEntity stockEntity = store.get(id);
             store.put(id, new StockEntity(stockEntity.getName(),
-                                    stock.getCurrentPrice()));
+                                          price));
         }
     }
 
+    /**
+     * Retrieve the stock assigned to the ID, if no stock is mapped to the supplied key,
+     * return an empty optional.
+     *
+     * @param id - id of the stock to retrieve
+     * @return Stock if present
+     */
     public Optional<Stock> retrieve(Long id) {
         Stock retVal = null;
         if (store.containsKey(id)) {
@@ -70,6 +81,11 @@ public class StockStore {
         return Optional.ofNullable(retVal);
     }
 
+    /**
+     * Return all stocks
+     *
+     * @return all stocks
+     */
     public List<Stock> retrieveAll() {
         return store.entrySet().stream()
                        .map(entry -> convert(entry.getKey(), entry.getValue()))

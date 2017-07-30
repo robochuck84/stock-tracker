@@ -16,8 +16,6 @@ import java.util.function.Supplier;
 @CrossOrigin(origins = "http://localhost:9000")
 public class StockController {
 
-    private Logger logger = LoggerFactory.getLogger(StockController.class);
-
     private StockStore store;
 
     @Autowired
@@ -42,7 +40,7 @@ public class StockController {
     @ResponseBody
     public void updateStock(@PathVariable("id") Long id, @RequestBody Stock stock) {
         Preconditions.checkNotNull(stock.getCurrentPrice(), badRequest("Price cannot be null"));
-        store.update(id, stock);
+        store.update(id, stock.getCurrentPrice());
     }
 
     @RequestMapping(path="/stocks", method=RequestMethod.POST)

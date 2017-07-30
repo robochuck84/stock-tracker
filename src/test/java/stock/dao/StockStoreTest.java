@@ -72,7 +72,7 @@ public class StockStoreTest {
 
         // when
         Long id = store.insert(stock);
-        store.update(id, new Stock("test", 12.0));
+        store.update(id, 12.0);
         Optional<Stock> test = store.retrieve(id);
 
         // then
