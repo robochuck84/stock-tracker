@@ -1,4 +1,4 @@
-$(document).ready(function() {
+var load_all_stocks = function() {
     $.ajax({
         url: "http://localhost:8080/api/stocks",
         success: function(data) {
@@ -15,6 +15,13 @@ $(document).ready(function() {
             });
             $('#all-stocks').html(elements);
         }
+    });
+};
+
+$(document).ready(function() {
+    $.ajax({
+        url: "http://localhost:8080/api/stocks",
+        success: load_all_stocks
     });
 
     $("#get-id-submit").click(function() {
@@ -44,10 +51,10 @@ $(document).ready(function() {
             data: JSON.stringify({"id": id, "currentPrice": price}),
             success: function (data) {
                 $("#update-message").html("Success!");
+                load_all_stocks();
             },
             error: function(error) {
-                console.log(error);
-                $("#error").html(error.message);
+                alert(error);
             }
         });
     });
@@ -61,10 +68,11 @@ $(document).ready(function() {
             contentType: "application/json",
             data: JSON.stringify({"name": name, "currentPrice": price}),
             success: function (data) {
-                console.log(data);
                 $("#create-message").html("Successfully create stock " + name + " for " + price + ", ID is " + data);
+                load_all_stocks();
             },
             error: function(error) {
+                alert(error.message);
             }
         });
     });

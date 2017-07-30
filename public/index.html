@@ -22,8 +22,6 @@
 <div>
     <h1>Stock Tracker</h1>
     <div class="row">
-      <div id="error" class="alert-danger"></div>
-
         <div class="col-md-4">
             <h4>Menu</h4>
             <ul class="nav nav-pills nav-stacked">
@@ -49,28 +47,44 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Get Stock</div>
                 <div class="panel-body">
-
-                  <label>ID:</label><input id="get-id"/>
-                  <input id="get-id-submit" type="button" value="Search"/>
-
-                    <div class="individual-stocks"></div>
+                  <div class="form-group">
+                    <label for="get-id">ID</label>
+                    <input class="form-control" id="get-id" placeholder="ID"/>
+                  </div>
+                  <button class="btn btn-default" id="get-id-submit">Search</button>
+                  <hr/>
+                  <div class="individual-stocks"></div>
                 </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">Update Stock</div>
                 <div class="panel-body">
-                  <label>ID:</label><input id="update-id"/><br/>
-                  <label>New Price:</label><input id="update-price"/><br/>
-                  <input id="update-submit" type="button" value="Update"/>
+                  <div class="form-group">
+                    <label for="update-id">ID</label>
+                    <input class="form-control" id="update-id" placeholder="ID"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="update-price">New Price</label>
+                    <input class="form-control" id="update-price" placeholder="Price"/>
+                  </div>
+                  <button class="btn btn-default" id="update-submit" type="button">Update</button>
+                  <hr/>
                   <div id="update-message"></div>
                 </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">Create Stock</div>
                 <div class="panel-body">
-                  <label>Name:</label><input id="create-name" title="Name"/><br/>
-                  <label>Price:</label><input id="create-price" title="Price"/><br/>
-                  <input id="create-submit" type="button" value="Create"/>
+                  <div class="form-group">
+                    <label for="create-name">Name:</label>
+                    <input class="form-control" id="create-name" title="Name" placeholder="Name"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="create-price">Price:</label>
+                    <input class="form-control" id="create-price" title="Price" placeholder="Price"/>
+                  </div>
+                  <button class="btn btn-default" id="create-submit" type="button">Create</button>
+                  <hr/>
                   <div id="create-message"></div>
                 </div>
             </div>
