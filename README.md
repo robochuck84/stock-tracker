@@ -1,11 +1,9 @@
 Stock Tracker Demo
 ==================
 
-Write Me!
-
 ## How to start server
 
-Requires maven:
+Requires [Maven](https://maven.apache.org/):
 
 ```bash
 mvn clean sprint-boot:run
@@ -38,6 +36,8 @@ Now navigate to localhost:9000, you should be seeing a standard Bootstrap web UI
 * Controller needs a test
 * Display of prices needs a consistent format
 * Web Site needs dedicated grunt build
+  * Currently cant run website as a standalone entity
+  * Jar files are passed in the clear, needs minification 
 * ~~Implement to the API specification~~
 * ~~Split data layer from API pojos~~
 * ~~Fix display of Timestamp on return json~~
