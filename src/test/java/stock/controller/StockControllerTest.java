@@ -2,93 +2,163 @@ package stock.controller;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.web.servlet.MockMvc;
 import stock.Stock;
-import stock.controller.StockController;
 import stock.dao.StockStore;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class StockControllerTest {
 
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private StockStore stockStore;
+
     @Test
-    public void testGetStocks() {
+    public void testGetStocks() throws Exception {
         // given
-        Stock test = new Stock(1l, "test", 10.0, "now");
-
-        StockStore store = mock(StockStore.class);
-        when(store.retrieveAll()).thenReturn(ImmutableList.of(test));
-
-        StockController controller = new StockController(store);
-
-        Stock expected = new Stock(1l, "test", 10.0, "now");
+        when(stockStore.retrieveAll()).thenReturn(
+                ImmutableList.of(
+                        new Stock(1l, "test1", 10.0, "now"),
+                        new Stock(2l, "test2", 12.0, "now")));
 
         // when
-        List<Stock> testStocks = controller.getStocks();
-
-        // then
-        assertThat(testStocks, contains(expected));
+        mockMvc.perform(get("/api/stocks"))
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].name", is("test1")))
+                .andExpect(jsonPath("$[0].currentPrice", is(10.0)))
+                .andExpect(jsonPath("$[0].lastUpdated", is("now")))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].name", is("test2")))
+                .andExpect(jsonPath("$[1].currentPrice", is(12.0)))
+                .andExpect(jsonPath("$[1].lastUpdated", is("now")));
     }
 
     @Test
-    public void testGetStock() {
+    public void testGetStock() throws Exception {
         // given
-        Stock test = new Stock(1l, "test", 10.0, "now");
-
-        StockStore store = mock(StockStore.class);
-        when(store.retrieve(eq(1l))).thenReturn(Optional.of(test));
-
-        StockController controller = new StockController(store);
-
-        Stock expected = new Stock(1l, "test", 10.0, "now");
+        when(stockStore.retrieve(eq(1l))).thenReturn(
+                Optional.of(
+                        new Stock(1l, "test", 12.0, "now")));
 
         // when
-        Stock testStock = controller.getStock(1l);
-
-        // then
-        assertThat(testStock, equalTo(expected));
+        mockMvc.perform(get("/api/stocks/1"))
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("test")))
+                .andExpect(jsonPath("$.currentPrice", is(12.0)))
+                .andExpect(jsonPath("$.lastUpdated", is("now")));
     }
 
     @Test
-    public void testUpdateStock() {
+    public void testGetStockWithFailure() throws Exception {
         // given
-        Stock test = new Stock(1l, "test", 10.0, "now");
-
-        StockStore store = mock(StockStore.class);
-
-        StockController controller = new StockController(store);
+        when(stockStore.retrieve(eq(1l))).thenReturn(
+                Optional.empty());
 
         // when
-        controller.updateStock(1l, test);
+        mockMvc.perform(get("/api/stocks/1"))
+                // then
+                .andExpect(status().isNotFound());
+    }
 
-        // then
-        verify(store).update(eq(1l), eq(test.getCurrentPrice()));
+
+    @Test
+    public void testUpdateStock() throws Exception {
+        // given
+        String body = "{\"currentPrice\":10.0}";
+
+        // when
+        mockMvc.perform(put("/api/stocks/1")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                // then
+                .andExpect(status().isOk());
+
+        verify(stockStore).update(eq(1l), eq(10.0));
     }
 
     @Test
-    public void testCreateStock() {
+    public void testUpdateStockWithFailure() throws Exception {
         // given
-        Stock test = new Stock(1l, "test", 10.0, "now");
-
-        StockStore store = mock(StockStore.class);
-        when(store.insert(eq(test))).thenReturn(1l);
-
-        StockController controller = new StockController(store);
+        String body = "{}";
 
         // when
-        Long testId = controller.createStock(test);
+        mockMvc.perform(put("/api/stocks/1")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                // then
+                .andExpect(status().is4xxClientError());
 
-        // then
-        assertThat(testId, equalTo(1l));
+        verifyNoMoreInteractions(stockStore);
+    }
+
+    @Test
+    public void testCreateStock() throws Exception {
+        // given
+        String body = "{\"name\":\"test\",\"currentPrice\":10.0}";
+
+        // when
+        mockMvc.perform(post("/api/stocks")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                // then
+                .andExpect(status().isCreated());
+
+        verify(stockStore).insert(isA(Stock.class));
+    }
+
+    @Test
+    public void testCreateStockWithNoName() throws Exception {
+        // given
+        String body = "{\"currentPrice\":10.0}";
+
+        // when
+        mockMvc.perform(post("/api/stocks")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                // then
+                .andExpect(status().is4xxClientError());
+
+        verifyNoMoreInteractions(stockStore);
+    }
+
+    @Test
+    public void testCreateStockWithNoPrice() throws Exception {
+        // given
+        String body = "{\"name\":\"test\"}";
+
+        // when
+        mockMvc.perform(post("/api/stocks")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                // then
+                .andExpect(status().is4xxClientError());
+
+        verifyNoMoreInteractions(stockStore);
     }
 }
