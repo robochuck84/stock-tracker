@@ -1,11 +1,12 @@
 package stock.dao;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import stock.Stock;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -16,11 +17,11 @@ public class StockStore {
 
     private final AtomicLong counter = new AtomicLong();
 
-    private Map<Long, StockEntity> store;
+    private ConcurrentMap<Long, StockEntity> store;
     private ConcurrentMap<String, StockEntity> nameIndex;
 
     public StockStore() {
-        this.store = new HashMap<>();
+        this.store = new ConcurrentHashMap<>();
         this.nameIndex = new ConcurrentHashMap<>();
     }
 
