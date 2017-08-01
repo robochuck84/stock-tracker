@@ -17,11 +17,11 @@ public class StockStore {
 
     private final AtomicLong counter = new AtomicLong();
 
-    private ConcurrentMap<Long, StockEntity> store;
+    private Map<Long, StockEntity> store;
     private ConcurrentMap<String, StockEntity> nameIndex;
 
     public StockStore() {
-        this.store = new ConcurrentHashMap<>();
+        this.store = new HashMap<>();
         this.nameIndex = new ConcurrentHashMap<>();
     }
 
@@ -33,21 +33,15 @@ public class StockStore {
      * @throws IllegalArgumentException - if the name already appears in the store
      */
     public Long insert(Stock stock) throws IllegalArgumentException {
-        if (nameIndex.get(stock.getName()) != null) {
+        StockEntity stockEntity = new StockEntity(stock.getName(), stock.getCurrentPrice());
+
+        StockEntity previous = nameIndex.putIfAbsent(stock.getName(), stockEntity);
+        if (previous != null) {
             throw new IllegalArgumentException("Name already exists");
         }
 
         Long id = counter.incrementAndGet();
-
-        // Concurrent Map can potentially call the mapping function multiple times,
-        // its best to leave the ID generation outside, otherwise you may get duplicates
-        // in the store.
-        nameIndex.computeIfAbsent(stock.getName(), s -> {
-            StockEntity stockEntity = new StockEntity(stock.getName(),
-                                                      stock.getCurrentPrice());
-            store.put(id, stockEntity);
-            return stockEntity;
-        });
+        store.put(id, stockEntity);
 
         return id;
     }
