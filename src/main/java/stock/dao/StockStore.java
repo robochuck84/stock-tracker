@@ -47,7 +47,7 @@ public class StockStore {
     }
 
     /**
-     * Update an existing stock items price, all other fields are fixed.
+     * Update an existing stock items price.
      *
      * @param id - id of the stock to update
      * @param price - price

@@ -1,8 +1,12 @@
+var format_price = function(price) {
+    return "$" + price.toFixed(2);
+}
+
 var create_table_element = function(item) {
     var body = '<tr>'+
         '<td>' + item.id + '</td>' +
         '<td>' + item.name + '</td>' +
-        '<td>' + item.currentPrice + '</td>' +
+        '<td>' + format_price(item.currentPrice) + '</td>' +
         '<td>' + item.lastUpdated.toString() + '</td>' +
         '</tr>';
     return body;
